@@ -2,79 +2,75 @@
 
 ## 🚀 **Overview**
 
-Welcome to the **Airline Performance Analysis (2007)** project! This repository contains an in-depth analysis of **flight cancellations** and **delays** in 2007. The analysis is based on a dataset that includes **flight schedules**, **cancellations**, and **delays**. The goal of this project is to uncover trends and correlations that can help improve airline operations, focusing on factors like **cancellation rates**, **delay patterns**, and **time-based performance**.
+Welcome to the **Airline Performance Analysis (2007)** repository! In this project, we perform an in-depth analysis of **flight cancellations** and **delays** using data from **2007**. The analysis includes insights into **delay patterns**, **cancellation reasons**, and **airline performance**. The goal is to identify operational inefficiencies, weather impacts, and patterns that could help airlines optimize performance.
 
-This repository provides the following key analyses:
-- **Delay Patterns**: Time of day, day of the week, and month
-- **Cancellation Reasons**: Carrier, Weather, NAS, Security
-- **Problematic Routes**: Routes with the highest delays and cancellations
-- **Airline Performance**: Top 5 airlines vs others
+This analysis is based on the **airlines2007 dataset** and includes the following key areas:
 
-## 🛠️ **Setup and Installation**
+- **Delay Patterns** (Time of day, Days of the week, and Months)
+- **Cancellation Reasons** (Carrier, Weather, NAS, Security)
+- **Problematic Routes** (Routes with the highest delays and cancellations)
+- **Airline and Airport Performance** (Top 5 airlines vs Others)
 
-### **1. Set Up Virtual Machine (VM)**:
-- First, ensure you have a **VM** running with **Ubuntu** or any Linux-based OS. You can use **VirtualBox** or **VMware** for setting up the VM.
-- Allocate **sufficient resources** (CPU, RAM, Disk) based on your dataset size and expected workload.
+## 📊 **Key Findings**
 
-### **2. Install Hadoop on Your VM**:
-   - To install **Hadoop**, follow the instructions [here](https://hadoop.apache.org/). You will need **Java** installed for Hadoop to work properly.
+### **1. Delay Patterns ⏰**
+- **Morning flights** 🕖 have the **lowest delays**, with arrival delays averaging 4.18 minutes, and departure delays at 5.36 minutes.
+- **Evening flights** 🌆 experience the **highest delays**, with arrival delays averaging 17.40 minutes and departure delays at 18.91 minutes.
+- **Thursday and Friday** 📅 see the highest delays, likely due to **increased air traffic** and **weekend operational strain**.
+
+### **2. Flight Cancellations ❌**
+- **Carrier delays** 🚁 (internal airline issues) are the most common reason for cancellations (**67,779 flights**), followed by **weather disruptions** 🌧️ (**61,935 cancellations**).
+- **NAS-related cancellations** 📡 (air traffic control) and **security concerns** 🔒 are less frequent but still significant.
+
+### **3. Time-Based Performance 🕓**
+- **Winter months** ❄️ (**December, January, February**) see the highest cancellation rates, likely due to **weather-related disruptions**.
+- **Spring months** 🌸 (**March-May**) and **fall months** 🍂 (**September-November**) show fewer disruptions, with **November** performing the best in terms of on-time flights.
+
+### **4. Airline Performance 🏅**
+- **Top 5 Airlines** ✈️ exhibit **significantly higher cancellation rates** compared to other airlines, suggesting the need for operational improvements, particularly in **maintenance** and **crew management**.
+
+### **5. Problematic Routes 🛣️**
+- **LAX to EGE** and **ACK to EWR** experience the **highest delays**, primarily due to **weather**, **operational issues**, and **airport congestion**. Improving **weather management**, **airport coordination**, and **flight scheduling** could help reduce delays.
+
+- ## 🛠️ **Setup and Installation**
+
+To get started with the **Airline Performance Analysis**, follow the steps below to set up the **data** and **environment** on your **local VM** and **Hive** database.
+
+### 1. **Set Up Virtual Machine (VM)**:
+   - Ensure you have a **VM** running with **Ubuntu** or any **Linux-based OS**. You can use **VirtualBox** or **VMware** to set up the VM.
+   - Allocate sufficient resources such as **CPU**, **RAM**, and **Disk** based on your dataset size and expected workload.
+
+### 2. **Install Hadoop on VM**:
+   Follow the instructions in the official Hadoop documentation to set up **Apache Hadoop**:
    - Install **Hadoop**:
      ```bash
      sudo apt-get update
      sudo apt-get install hadoop
      ```
-   - Ensure **Hadoop** is running and correctly configured.
+   - Configure **Hadoop** and ensure it's working correctly for data storage.
 
-### **3. Install Hive on VM**:
-   - Follow the official instructions to set up **Apache Hive** from [here](https://hive.apache.org/).
-   - To install **Hive**:
+### 3. **Install Hive on VM**:
+   - **Download and Install Hive** from [Apache Hive](https://hive.apache.org/).
+   - Install **Hive**:
      ```bash
      sudo apt-get install hive
      ```
-   - Ensure that **Hive** is integrated with **Hadoop** for data querying.
+   - Make sure **Hive** is connected to **Hadoop** for querying the data.
 
-### **4. Import Data into Hadoop File System (HDFS)**:
-   - First, **download** the required **CSV files** from the **Kaggle** webpage.
-   - To transfer data from your local machine to the **VM**, use **`pscp`**:
+### 4. **Transfer Data to the VM**:
+   - Download the necessary **CSV files** from the **Kaggle webpage**.
+   - Use **`pscp`** to transfer the CSV files from your **local machine** to the **VM**:
      ```bash
-     pscp -P 2222 "C:\path\to\your\data\*.csv" maria_dev@127.0.0.1:/home/maria_dev/zuhair/dm_assignment2/data
+     pscp -P 2222 "C:\path\to\data\*.csv" maria_dev@127.0.0.1:/home/maria_dev/zuhair/dm_assignment2/data
      ```
-   - **Upload the files to HDFS**:
+
+### 5. **Upload Data to Hadoop File System (HDFS)**:
+   - Once the data files are successfully transferred, upload them to **HDFS**:
      ```bash
      hadoop fs -copyFromLocal /home/maria_dev/zuhair/dm_assignment2/data/*.csv /user/maria_dev/zuhair/dm_assignment2/data
      ```
 
-### **5. Load Data into Hive**:
-   - After the data is in **HDFS**, you need to create the appropriate **Hive tables** to load the data. For example, create the `airlines2007` table:
-     ```sql
-     CREATE TABLE airlines2007 (
-         FlightDate STRING,
-         CRSDepTime INT,
-         DepTime INT,
-         ArrTime INT,
-         CRSArrTime INT,
-         UniqueCarrier STRING,
-         FlightNum INT,
-         TailNum STRING,
-         Origin STRING,
-         Dest STRING,
-         Distance INT,
-         Cancelled INT,
-         CancellationCode STRING,
-         Diverted INT,
-         CarrierDelay INT,
-         WeatherDelay INT,
-         NASDelay INT,
-         SecurityDelay INT,
-         LateAircraftDelay INT
-     ) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
-     ```
-   - **Load the CSV data into Hive**:
-     ```sql
-     LOAD DATA INPATH '/user/hive/warehouse/airlines2007.csv' INTO TABLE airlines2007;
-     ```
-
-### **6. Install Python Dependencies**:
-   Ensure you have the necessary Python libraries for data analysis and visualization. You can install them using the following:
+### 6. **Install Python Dependencies**:
+   Install the necessary Python packages for **data analysis** and **visualization**:
    ```bash
    pip install pandas numpy matplotlib seaborn scipy ipython impyla pmdarima
